@@ -26,7 +26,8 @@ class DNSHandler(DatagramProtocol):
     def datagramReceived(self, data, address):
         reqid   = data[:2]
         domain  = data[12:data.find(b'\x00', 12)]
-        sdata = b'%s\x01\x00\x00\x01\x00\x00\x00\x00\x00\x00%s\x00\x00\x01\x00\x01' % (os.urandom(2), domain)
+        sdata = b'%s\x01\x00\x00\x01\x00\x00\x00\x00\x00\x00'\
+                b'%s\x00\x00\x01\x00\x01' % (os.urandom(2), domain)
         sdata = struct.pack(b'>H',len(sdata)) + sdata
         rdata = self.resolv_by_tcp(sdata)
         if not rdata:
