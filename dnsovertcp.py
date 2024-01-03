@@ -1,10 +1,6 @@
 #!/usr/bin/env python3
 
-import re
 import os
-import sys
-import time
-import threading
 import logging
 import socket
 import struct
@@ -34,16 +30,10 @@ class DNSHandler(DatagramProtocol):
                 if len(data) < 10:                    
                     raise 'Failt to receive data'
                 
-                #import binascii
-                #print binascii.hexlify(data)
-                #ips = ['.'.join(str(ord(x)) for x in s[10:]) for s in re.findall('\x00\x01\x00\x01.{5}\x04.{4}', data)]
-                #print ips:
-
                 return data[4:]
 
             except (IOError,socket.error,Exception) as e:
                 pass
-                #logging.error('DNSServer failed to resolve the domain')
             finally:
                 if sock:
                    sock.close()        
