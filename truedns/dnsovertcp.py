@@ -16,7 +16,7 @@ class DNSHandler(DatagramProtocol):
 
     """UDP Handler """
 
-    dns_servers = ['8.8.8.8','8.8.4.4','208.67.222.222','208.67.220.220']
+    dns_servers = ['127.0.0.1']
     timeout   = 3
     max_cache_size = 1500
     cache = {}
