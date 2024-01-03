@@ -28,7 +28,7 @@ class DNSHandler(DatagramProtocol):
         sdata = struct.pack(b'>H',len(sdata)) + sdata
         rdata = self.resolv_by_tcp(sdata)
         if not rdata:
-            rdata = '\x81\x80\x00\x01\x00\x01\x00\x00\x00\x00'
+            rdata = b'\x81\x80\x00\x01\x00\x01\x00\x00\x00\x00'
             print('DNSServer failed to resolve', domain, file=sys.stderr)
         self.transport.write(reqid + rdata, address)
 
