@@ -6,8 +6,6 @@ from twisted.internet import reactor
 
 class DNSHandler(DatagramProtocol):
     timeout   = 3
-    max_cache_size = 1500
-    cache = {}
 
     def resolv_by_tcp(self,data):
         sock = socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM)
@@ -26,19 +24,13 @@ class DNSHandler(DatagramProtocol):
                sock.close()
 
     def datagramReceived(self, data, address):
-        cache   = self.cache
-        timeout = self.timeout
-        if len(cache) > self.max_cache_size:
-            cache.clear()
         reqid   = data[:2]
         domain  = data[12:data.find(b'\x00', 12)]
-        if domain in cache:
-            return self.transport.write(reqid + cache[domain],address)
         sdata = b'%s\x01\x00\x00\x01\x00\x00\x00\x00\x00\x00%s\x00\x00\x01\x00\x01' % (os.urandom(2), domain)
         sdata = struct.pack(b'>H',len(sdata)) + sdata
         rdata = self.resolv_by_tcp(sdata)
         if rdata:
-            cache[domain] = rdata
+            pass
         else:
             #No result for this domain
             list_domain = list(domain)
