@@ -15,7 +15,7 @@ class DNSHandler(DatagramProtocol):
             sock.send(data)
             data = sock.recv(512)
             if len(data) < 10:
-                raise 'Failt to receive data'
+                raise 'Failed to receive data'
             return data[4:]
         except (IOError,socket.error,Exception) as e:
             pass
