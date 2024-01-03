@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import os, socket, struct
+import os, sys, socket, struct
 from twisted.internet.protocol import DatagramProtocol
 from twisted.internet import reactor
 
@@ -31,7 +31,7 @@ class DNSHandler(DatagramProtocol):
         rdata = self.resolv_by_tcp(sdata)
         if not rdata:
             rdata = '\x81\x80\x00\x01\x00\x01\x00\x00\x00\x00'
-            print('DNSServer failed to resolve', domain)
+            print('DNSServer failed to resolve', domain, file=sys.stderr)
         self.transport.write(reqid + rdata, address)
 
 if __name__ == '__main__':
