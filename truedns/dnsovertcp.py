@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import re
 import os
@@ -58,23 +58,23 @@ class DNSHandler(DatagramProtocol):
             cache.clear()
 
         reqid   = data[:2]
-        domain  = data[12:data.find('\x00', 12)]
+        domain  = data[12:data.find(b'\x00', 12)]
 
         if domain in cache:
             return self.transport.write(reqid + cache[domain],address)
 
-        sdata = '%s\x01\x00\x00\x01\x00\x00\x00\x00\x00\x00%s\x00\x00\x01\x00\x01' % (os.urandom(2), domain)
-        sdata = struct.pack('>H',len(sdata)) + sdata
+        sdata = b'%s\x01\x00\x00\x01\x00\x00\x00\x00\x00\x00%s\x00\x00\x01\x00\x01' % (os.urandom(2), domain)
+        sdata = struct.pack(b'>H',len(sdata)) + sdata
         rdata = self.resolv_by_tcp(sdata)
         if rdata:            
             cache[domain] = rdata        
         else:
             #No result for this domain
             list_domain = list(domain)
-            i = ord(domain[0])+1
+            i = domain[0]+1
             while i < len(domain):
                list_domain[i]='.'
-               i += ord(domain[i])+1
+               i += domain[i]+1
 
             logging.error('DNSServer failed to resolve %s',''.join(list_domain[1:]))
             rdata = '\x81\x80\x00\x01\x00\x01\x00\x00\x00\x00'
