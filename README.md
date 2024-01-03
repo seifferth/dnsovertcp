@@ -1,45 +1,20 @@
-DNS over TCP
-============
+# DNS over TCP
 
-Transform the local dns udp request to tcp request, thus avoid dns poisoning or hijacking, this converter is also similar to the dnsproxy.
+Transform the local dns udp requests to tcp requests. This script is based
+on an earlier version found at <https://github.com/dsheng/dnsovertcp>.
 
-How to install and configuration
---------------------------------
+`dnsovertcp.py` is a standalone python script that will listen on
+localhost port 53/udp in order to forward all dns requests to localhost
+port 53/tcp. To attach port 53/tcp to an actual dns server, you could
+use a tool like `socat`, or you could use `ssh -L` to reroute all dns
+requests through an ssh tunnel.
 
-1, Install twisted package
+To check whether this script is working as intended, you might want to run
+something like
 
-	easy_install twisted
+    dig @localhost DOMAIN
 
-   If no easy_install you need to install python-setuptools and python-devel
+## License
 
-2, Run dnsovertcp
-   
-   For Linux
-
-	sudo ./install
-	sudo /etc/init.d/dnsovertcp start
-
-   For Mac OS
-
-    sudo ./install.osx
-    sudo /usr/local/bin/dns-overtcp start
-
-3, Edit local nameserver to localhost
-  
-   For Linux or Mac OS,modify /etc/resolv.conf
-
-	nameserver 127.0.0.1
-
-4, How to check if dnsovertcp is working
-
-   Install dns tools(dnsutils for Ubuntu,bind-tutils for CentOS):
-
-	a, dig twitter.com @127.0.0.1
-	b, dig +tcp twitter.com @8.8.8.8
-	c, dig twitter.com @8.8.8.8
-
-   The result of a and b should be same, if c is different from others, that means your upstream dns-server is poisoning.
-
-License:
---------
-The dnsovertcp is under MIT license 
+This project is licensed under an MIT license. For more information,
+see the `LICENSE` file.
