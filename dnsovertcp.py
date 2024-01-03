@@ -29,18 +29,9 @@ class DNSHandler(DatagramProtocol):
         sdata = b'%s\x01\x00\x00\x01\x00\x00\x00\x00\x00\x00%s\x00\x00\x01\x00\x01' % (os.urandom(2), domain)
         sdata = struct.pack(b'>H',len(sdata)) + sdata
         rdata = self.resolv_by_tcp(sdata)
-        if rdata:
-            pass
-        else:
-            #No result for this domain
-            list_domain = list(domain)
-            i = domain[0]+1
-            while i < len(domain):
-               list_domain[i]='.'
-               i += domain[i]+1
-
-            print('DNSServer failed to resolve %s',''.join(list_domain[1:]))
+        if not rdata:
             rdata = '\x81\x80\x00\x01\x00\x01\x00\x00\x00\x00'
+            print('DNSServer failed to resolve', domain)
         self.transport.write(reqid + rdata, address)
 
 if __name__ == '__main__':
