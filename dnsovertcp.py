@@ -5,28 +5,25 @@ from twisted.internet.protocol import DatagramProtocol
 from twisted.internet import reactor
 
 class DNSHandler(DatagramProtocol):
-    dns_servers = ['127.0.0.1']
     timeout   = 3
     max_cache_size = 1500
     cache = {}
 
     def resolv_by_tcp(self,data):
-        for dns_server in self.dns_servers:
-            sock = socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM)
-            try:
-                sock.settimeout(self.timeout)
-                sock.connect((dns_server,53))
-                sock.send(data)
-                data = sock.recv(512)
-                if len(data) < 10:
-                    raise 'Failt to receive data'
-                return data[4:]
-            except (IOError,socket.error,Exception) as e:
-                pass
-            finally:
-                if sock:
-                   sock.close()
-        return None
+        sock = socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM)
+        try:
+            sock.settimeout(self.timeout)
+            sock.connect(('127.0.0.1', 53))
+            sock.send(data)
+            data = sock.recv(512)
+            if len(data) < 10:
+                raise 'Failt to receive data'
+            return data[4:]
+        except (IOError,socket.error,Exception) as e:
+            pass
+        finally:
+            if sock:
+               sock.close()
 
     def datagramReceived(self, data, address):
         cache   = self.cache
