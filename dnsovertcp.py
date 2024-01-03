@@ -34,4 +34,5 @@ class DNSHandler(DatagramProtocol):
 
 if __name__ == '__main__':
     reactor.listenUDP(53, DNSHandler(), interface='127.0.0.1')
+    reactor.listenUDP(53, DNSHandler(), interface='::1')
     reactor.run()
