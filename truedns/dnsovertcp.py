@@ -9,8 +9,6 @@ import logging
 import socket
 import struct
 
-from truedns.daemon import Daemon
-
 from twisted.internet.protocol import DatagramProtocol
 from twisted.internet import reactor
 
@@ -84,9 +82,9 @@ class DNSHandler(DatagramProtocol):
         self.transport.write(reqid + rdata, address)   
 
 
-class DNSServer(Daemon):
+class DNSServer():
     def __init__(self, conf):        
-        Daemon.__init__(self,'/var/run/dnsovertcp.pid')
+        pass
 
     def run(self):
         reactor.listenUDP(53, DNSHandler(),interface='127.0.0.1')
@@ -94,4 +92,4 @@ class DNSServer(Daemon):
 
 
 if __name__ == '__main__':
-    pass
+    DNSServer(None).run()
