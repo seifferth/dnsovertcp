@@ -5,8 +5,7 @@ from twisted.internet.protocol import DatagramProtocol
 from twisted.internet import reactor
 
 class DNSHandler(DatagramProtocol):
-    timeout   = 3
-
+    timeout = 3
     def resolv_by_tcp(self,data):
         sock = socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM)
         try:
@@ -17,12 +16,10 @@ class DNSHandler(DatagramProtocol):
             if len(data) < 10:
                 raise 'Failed to receive data'
             return data[4:]
-        except (IOError,socket.error,Exception) as e:
+        except (IOError, socket.error, Exception) as e:
             pass
         finally:
-            if sock:
-               sock.close()
-
+            if sock: sock.close()
     def datagramReceived(self, data, address):
         reqid   = data[:2]
         domain  = data[12:data.find(b'\x00', 12)]
@@ -36,5 +33,5 @@ class DNSHandler(DatagramProtocol):
         self.transport.write(reqid + rdata, address)
 
 if __name__ == '__main__':
-    reactor.listenUDP(53, DNSHandler(),interface='127.0.0.1')
+    reactor.listenUDP(53, DNSHandler(), interface='127.0.0.1')
     reactor.run()
